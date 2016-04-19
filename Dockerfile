@@ -1,4 +1,4 @@
-FROM hub.bccvl.org.au/centos/centos7-epel:2016-02-04
+FROM hub.bccvl.org.au/centos/centos7-epel:2016-04-15
 
 # install official postgres repo
 RUN yum -y install http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-2.noarch.rpm
