@@ -35,8 +35,8 @@ if [ ! "$(ls -A ${PG_DATA})" ]; then
 
     if [ -e "${PG_DATA}/server.crt" -a -e "${PG_DATA}/server.key" ] ; then
         su postgres -c "echo \"ssl=on\" >> \"${PG_DATA}/postgresql.conf\""
-        su postgres -c "echo \"ssl_cert_file=\"${PG_DATA}/server.crt\" >> $PG_DATA/postgresql.conf"
-        su postgres -c "echo \"ssl_key_file=\"${PG_DATA}/server.key\" >> $PG_DATA/postgresql.conf"
+        su postgres -c "echo \"ssl_cert_file='${PG_DATA}/server.crt'\" >> \"$PG_DATA/postgresql.conf\""
+        su postgres -c "echo \"ssl_key_file='${PG_DATA}/server.key'\" >> \"$PG_DATA/postgresql.conf\""
     fi
 
     # Establish postgres user password and run the database
