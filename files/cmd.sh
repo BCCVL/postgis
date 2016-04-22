@@ -15,6 +15,14 @@ chown postgres:postgres ${PG_DATA}
 chmod 700 ${PG_DATA}
 
 
+# update SSL CERTS if in use
+if [ -n "${POSTGRES_SSL_CERT}" ] ; then
+    cp "${POSTGRES_SSL_CERT}" "${PG_DATA}/server.crt"
+fi
+if [ -n "${POSTGRES_SSL_KEY}" ] ; then
+    cp "${POSTGRES_SSL_KEY}" "${PG_DATA}/server.key"
+    chmod 600 "${PG_DATA}/server.key"
+fi
 
 # Check if data folder is empty. If it is, start the dataserver
 if [ ! "$(ls -A ${PG_DATA})" ]; then
@@ -25,10 +33,10 @@ if [ ! "$(ls -A ${PG_DATA})" ]; then
     su postgres -c "echo \"host all all 0.0.0.0/0 md5\" >> $PG_DATA/pg_hba.conf"
     su postgres -c "echo \"listen_addresses='*'\" >> $PG_DATA/postgresql.conf"
 
-    if [ -n "${POSTGRES_SSL_CERT}" ] ; then
-        su postgres -c "echo \"ssl=on\" >> $PG_DATA/postgresql.conf"
-        su postgres -c "echo \"ssl_cert_file=${POSTGRES_SSL_CERT}\" >> $PG_DATA/postgresql.conf"
-        su postgres -c "echo \"ssl_key_file=${POSTGRES_SSL_KEY}\" >> $PG_DATA/postgresql.conf"
+    if [ -e "${PG_DATA}/server.crt" -a -e "${PG_DATA}/server.key" ] ; then
+        su postgres -c "echo \"ssl=on\" >> \"${PG_DATA}/postgresql.conf\""
+        su postgres -c "echo \"ssl_cert_file=\"${PG_DATA}/server.crt\" >> $PG_DATA/postgresql.conf"
+        su postgres -c "echo \"ssl_key_file=\"${PG_DATA}/server.key\" >> $PG_DATA/postgresql.conf"
     fi
 
     # Establish postgres user password and run the database
