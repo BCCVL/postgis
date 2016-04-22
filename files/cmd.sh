@@ -26,7 +26,7 @@ if [ -n "${POSTGRES_SSL_KEY}" ] ; then
 fi
 
 # Check if data folder is empty. If it is, start the dataserver
-if [ ! "$(ls -A ${PG_DATA})" ]; then
+if [ ! "$(ls -A ${PG_DATA})" ] ; then
 
     su postgres -c "initdb --encoding=${ENCODING} --locale=${LOCALE}.${ENCODING} --lc-collate=${LOCALE}.${ENCODING} --lc-monetary=${LOCALE}.${ENCODING} --lc-numeric=${LOCALE}.${ENCODING} --lc-time=${LOCALE}.${ENCODING} -D ${PG_DATA}"
 
@@ -34,7 +34,7 @@ if [ ! "$(ls -A ${PG_DATA})" ]; then
     su postgres -c "echo \"host all all 0.0.0.0/0 md5\" >> $PG_DATA/pg_hba.conf"
     su postgres -c "echo \"listen_addresses='*'\" >> $PG_DATA/postgresql.conf"
 
-    if [ -n "${POSTGRES_SSL_CERT}" -a -n "${POSTGRES_SSL_KEY}" ] ;
+    if [ -n "${POSTGRES_SSL_CERT}" -a -n "${POSTGRES_SSL_KEY}" ] ; then
         su postgres -c "echo \"ssl=on\" >> \"${PG_DATA}/postgresql.conf\""
         su postgres -c "echo \"ssl_cert_file='${POSTGRES_SSL_CERT}'\" >> \"$PG_DATA/postgresql.conf\""
         su postgres -c "echo \"ssl_key_file='${POSTGRES_SSL_KEY}'\" >> \"$PG_DATA/postgresql.conf\""
