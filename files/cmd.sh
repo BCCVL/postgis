@@ -16,12 +16,11 @@ chmod 700 ${PG_DATA}
 
 
 # update SSL CERTS if in use
-# if [ -n "${POSTGRES_SSL_CERT}" ] ; then
-#     cp "${POSTGRES_SSL_CERT}" "${PG_DATA}/server.crt"
-# fi
+if [ -n "${POSTGRES_SSL_CERT}" ] ; then
+    chown postgres:postgres "${POSTGRES_SSL_CERT}"
+fi
 if [ -n "${POSTGRES_SSL_KEY}" ] ; then
-    # cp "${POSTGRES_SSL_KEY}" "${PG_DATA}/server.key"
-    # chmod 600 "${PG_DATA}/server.key"
+    chown postgres:postgres "${POSTGRES_SSL_KEY}"
     chmod 600 "${POSTGRES_SSL_KEY}"
 fi
 
@@ -39,12 +38,6 @@ if [ ! "$(ls -A ${PG_DATA})" ] ; then
         su postgres -c "echo \"ssl_cert_file='${POSTGRES_SSL_CERT}'\" >> \"$PG_DATA/postgresql.conf\""
         su postgres -c "echo \"ssl_key_file='${POSTGRES_SSL_KEY}'\" >> \"$PG_DATA/postgresql.conf\""
     fi
-
-    # if [ -e "${PG_DATA}/server.crt" -a -e "${PG_DATA}/server.key" ] ; then
-    #     su postgres -c "echo \"ssl=on\" >> \"${PG_DATA}/postgresql.conf\""
-    #     su postgres -c "echo \"ssl_cert_file='${PG_DATA}/server.crt'\" >> \"$PG_DATA/postgresql.conf\""
-    #     su postgres -c "echo \"ssl_key_file='${PG_DATA}/server.key'\" >> \"$PG_DATA/postgresql.conf\""
-    # fi
 
     # Establish postgres user password and run the database
     su postgres -c "pg_ctl -w -D ${PG_DATA} start" && su postgres -c "psql -h localhost -U postgres -p 5432 -c \"alter role postgres password '${POSTGRES_PASSWD}';\"" && su postgres -c "pg_ctl -w -D ${PG_DATA} stop"
@@ -70,8 +63,5 @@ EOSQL
 # stop db for setup:
 su postgres -c "pg_ctl -w -D ${PG_DATA} stop"
 
-
-
 # Start the database
 su postgres -c "postgres -D $PG_DATA"
-
