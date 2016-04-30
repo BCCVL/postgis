@@ -9,6 +9,10 @@ RUN yum -y install postgresql95-server \
                    postgis2_95 && \
     yum clean all
 
+# add backup scripts
+COPY files/pg_backup.sh files/pg_backup_rotated.sh /usr/bin/
+COPY files/pg_backup.config /etc/postgis/
+
 # add start script
 COPY files/cmd.sh /cmd.sh
 RUN chmod +x /cmd.sh
