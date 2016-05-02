@@ -6,8 +6,12 @@ RUN yum -y install http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/pgdg-cento
 # install postgres and postgis
 RUN yum -y install postgresql95-server \
                    postgresql95-contrib \
-                   postgis2_95 && \
+                   postgis2_95 \
+                   cronie \
+                   ssmtp && \
     yum clean all
+
+RUN yum -y install cronie ssmtp
 
 # add backup scripts
 COPY files/pg_backup.sh files/pg_backup_rotated.sh /usr/bin/

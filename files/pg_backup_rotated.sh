@@ -59,7 +59,7 @@ function create_pass_file()
     # hostname:port:database:username:password
     if [ ! -z $CONFIG_FILE_PATH ] ; then
         export PGPASSFILE=/tmp/pgpass
-        echo "${HOSTNAME}:*:*:${USERNAME}:${PASSWORD}" > ${PGPASSFILE}
+        echo "${HOSTNAME}:*:*:${USERNAME}:${POSTGRES_PASSWD/:/\\:}" > ${PGPASSFILE}
         chmod 600 ${PGPASSFILE}
     fi
 }
